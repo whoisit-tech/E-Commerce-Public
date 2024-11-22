@@ -22,7 +22,7 @@ options = st.sidebar.radio("Go to", ["Home", "Data Overview", "EDA & Insights", 
 @st.cache_data
 def load_data():
     # Data URL
-    url = "https://github.com/whoisit-tech/E-Commerce-Public/blob/main/archive%20(2).zip?raw=true"
+    url = "https://github.com/whoisit-tech/E-Commerce-Public/raw/main/archive%20(2).zip"
     response = requests.get(url)
     zip_file = zipfile.ZipFile(io.BytesIO(response.content))
 
