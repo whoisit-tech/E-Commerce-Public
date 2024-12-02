@@ -1,7 +1,4 @@
 import streamlit as st
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 # Data untuk grafik pertama (Top Produk Berdasarkan Jumlah Penjualan)
 data_penjualan = {
