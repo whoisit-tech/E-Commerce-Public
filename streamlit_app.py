@@ -1,6 +1,5 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 # Data for the first chart (Top Products by Sales Count)
 data_sales = {
