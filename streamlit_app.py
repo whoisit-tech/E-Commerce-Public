@@ -1,140 +1,175 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Set up page configuration
-st.set_page_config(page_title="E-Commerce Data Analysis", layout="wide")
-st.title("E-Commerce Data Analysis Dashboard")
-st.write("### By Vilosa Auliya Dewinta Sentanu | ochadwnta@gmail.com")
+# Pertanyaan 1
+data = {
+    "product_id": [
+        "aca2eb7d00ea1a7b8ebd4e68314663af",
+        "99a4788cb24856965c36a24e339b6058",
+        "422879e10f46682990de24d770e7f83d",
+        "389d119b48cf3043d311335e499d9c6b",
+        "368c6c730842d78016ad823897a372db",
+        "53759a2ecddad2bb87a079a1f1519f73",
+        "d1c427060a0f73f6b889a5c7c61f2ac4",
+        "53b36df67ebb7c41585e8d54d6772e08",
+        "154e7e31ebfa092203795c972e5804a6",
+        "3dd2a17168ec895c781a9191c1e95ad7",
+    ],
+    "product_category_name": [
+        "moveis_decoracao",
+        "cama_mesa_banho",
+        "ferramentas_jardim",
+        "ferramentas_jardim",
+        "ferramentas_jardim",
+        "ferramentas_jardim",
+        "informatica_acessorios",
+        "relogios_presentes",
+        "beleza_saude",
+        "informatica_acessorios",
+    ],
+    "sales_count": [527, 488, 484, 392, 388, 373, 343, 323, 281, 274],
+    "revenue_contribution": [
+        0.276706, 0.316559, 0.195541, 0.157748, 0.154925, 0.149998, 0.347379,
+        0.277254, 0.046537, 0.302264,
+    ],
+}
 
-# Data loading (modify with your own data loading code if necessary)
-@st.cache_data
-def load_data():
-    # Assuming data is already loaded into DataFrame variables like `orders`, `order_payments`, `products`, etc.
-    # Example:
-    # orders = pd.read_csv("orders.csv")
-    # order_items = pd.read_csv("order_items.csv")
-    # products = pd.read_csv("products.csv")
-    # order_payments = pd.read_csv("order_payments.csv")
-    pass
+# Create DataFrame
+df = pd.DataFrame(data)
 
-# Assuming data is loaded
-# orders, order_payments, products = load_data()
+# Streamlit UI
+st.title("Top Products by Sales Count")
+st.write("This chart displays the top products based on their sales count.")
 
-# Exploratory Data Analysis (EDA) - Visualizations
-st.header("Exploratory Data Analysis (EDA)")
+# Plot
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.barplot(
+    data=df,
+    x="sales_count",
+    y="product_category_name",
+    palette="viridis",
+    ax=ax
+)
+ax.set_title("Top 10 Products by Sales Count")
+ax.set_xlabel("Sales Count")
+ax.set_ylabel("Product Category")
 
-# 1.1 Monthly Orders Distribution
-orders['order_purchase_month'] = pd.to_datetime(orders['order_purchase_timestamp']).dt.to_period('M')
-monthly_orders = orders.groupby('order_purchase_month').size()
-
-st.subheader("Distribusi Pesanan per Bulan")
-fig, ax = plt.subplots(figsize=(10, 5))
-monthly_orders.plot(kind='bar', color='skyblue', ax=ax)
-plt.title('Distribusi Pesanan per Bulan', fontsize=14)
-plt.xlabel('Bulan', fontsize=12)
-plt.ylabel('Jumlah Pesanan', fontsize=12)
-plt.xticks(rotation=45)
+# Display plot in Streamlit
 st.pyplot(fig)
 
-# 1.2 Payment Method Distribution
-payment_methods = order_payments.groupby('payment_type').size().reset_index(name='count')
+# Additional table
+st.write("Data Table:")
+st.dataframe(df)
 
-st.subheader("Distribusi Metode Pembayaran")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(data=payment_methods, x='payment_type', y='count', palette='muted', ax=ax)
-plt.title('Distribusi Metode Pembayaran', fontsize=14)
-plt.xlabel('Metode Pembayaran', fontsize=12)
-plt.ylabel('Jumlah Penggunaan', fontsize=12)
+# Pertanyaan 2
+
+average_shipping_time = 12.09
+data = {
+    "product_category_name": [
+        "casa_conforto_2",
+        "fashion_calcados",
+        "seguros_e_servicos",
+        "artigos_de_natal",
+        "moveis_escritorio",
+    ],
+    "shipping_time": [14.066667, 14.933852, 15.000000, 15.300000, 20.386691],
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Streamlit UI
+st.title("Shipping Time Analysis")
+st.write("This application displays the average shipping time and categories with the longest shipping times.")
+
+# Display Average Shipping Time
+st.subheader("Average Shipping Time for All Orders")
+st.metric(label="Average Shipping Time", value=f"{average_shipping_time:.2f} days")
+
+# Display Categories with Longest Shipping Times
+st.subheader("Categories with Longest Shipping Times")
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.barplot(
+    data=df,
+    x="shipping_time",
+    y="product_category_name",
+    palette="magma",
+    ax=ax
+)
+ax.set_title("Longest Shipping Times by Category")
+ax.set_xlabel("Shipping Time (days)")
+ax.set_ylabel("Product Category")
+
+# Display plot in Streamlit
 st.pyplot(fig)
 
-# 1.3 Shipping Time Distribution
-orders['order_delivered_customer_date'] = pd.to_datetime(orders['order_delivered_customer_date'])
-orders['shipping_time'] = (orders['order_delivered_customer_date'] - pd.to_datetime(orders['order_purchase_timestamp'])).dt.days
+# Additional table
+st.write("Data Table:")
+st.dataframe(df)
 
-st.subheader("Distribusi Waktu Pengiriman")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.histplot(orders['shipping_time'].dropna(), bins=30, kde=True, color='green', ax=ax)
-plt.title('Distribusi Waktu Pengiriman', fontsize=14)
-plt.xlabel('Waktu Pengiriman (hari)', fontsize=12)
-plt.ylabel('Frekuensi', fontsize=12)
+# Pertanyaan 3
+
+data = {
+    "payment_type": ["credit_card", "boleto", "voucher", "debit_card"],
+    "count": [24875, 5292, 461, 384],
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Streamlit UI
+st.title("Most Used Payment Methods for Above-Average Transactions")
+st.write("This application displays the payment methods most frequently used for transactions above the average value.")
+
+# Plot
+st.subheader("Payment Methods Usage")
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.barplot(
+    x=df["count"],
+    y=df["payment_type"],
+    palette="coolwarm",
+    ax=ax
+)
+ax.set_title("Most Frequent Payment Methods")
+ax.set_xlabel("Count")
+ax.set_ylabel("Payment Method")
+
+# Display plot in Streamlit
 st.pyplot(fig)
 
-# Business Insights & Questions
+# Additional table
+st.write("Data Table:")
+st.dataframe(df)
 
-st.header("Business Questions Insights")
+# Pertanyaan 4
 
-# Question 1: Top Products by Sales in Last 3 Months
-top_products = order_items.groupby('product_id').agg({
-    'order_item_id': 'count',
-    'price': 'sum'
-}).reset_index()
-top_products.rename(columns={'order_item_id': 'sales_count'}, inplace=True)
-top_products = top_products.merge(products, on='product_id')
+repeat_purchase_percentage = 0.00
+repeat_purchase_pattern = pd.Series([], name="count")
 
-# Calculate revenue contribution
-total_revenue = top_products['price'].sum()
-top_products['revenue_contribution'] = (top_products['price'] / total_revenue) * 100
+# Streamlit UI
+st.title("Repeat Purchase Analysis")
+st.write("This application displays the percentage of customers who made repeat purchases and the product categories frequently purchased by repeat customers.")
 
-top_10_products = top_products.nlargest(10, 'sales_count')
+# Display Repeat Purchase Percentage
+st.subheader("Percentage of Customers Who Made Repeat Purchases")
+st.metric(label="Repeat Purchase Percentage", value=f"{repeat_purchase_percentage:.2f}%")
 
-st.subheader("Top 10 Produk Berdasarkan Penjualan dalam 3 Bulan Terakhir")
-st.dataframe(top_10_products[['product_category_name', 'sales_count', 'revenue_contribution']])
+# Display Repeat Purchase Patterns
+st.subheader("Product Categories Frequently Purchased by Repeat Customers")
+if repeat_purchase_pattern.empty:
+    st.write("No data available for repeat purchase patterns.")
+else:
+    fig, ax = plt.subplots(figsize=(8, 6))
+    repeat_purchase_pattern.sort_values(ascending=True).plot(
+        kind="barh", color="skyblue", ax=ax
+    )
+    ax.set_title("Product Categories for Repeat Purchases")
+    ax.set_xlabel("Count")
+    ax.set_ylabel("Product Category")
+    st.pyplot(fig)
 
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.barplot(data=top_10_products, x='sales_count', y='product_category_name', palette='viridis', ax=ax)
-plt.title('Top 10 Produk Berdasarkan Penjualan', fontsize=14)
-plt.xlabel('Jumlah Penjualan', fontsize=12)
-plt.ylabel('Kategori Produk', fontsize=12)
-st.pyplot(fig)
+# Additional note
+st.write("Note: The data shows no repeat purchases or patterns at this time.")
 
-# Question 2: Average Shipping Time by Product Category
-orders_with_products = orders.merge(order_items, on='order_id')
-category_shipping_time = orders_with_products.merge(products, on='product_id').groupby('product_category_name')['shipping_time'].mean().sort_values()
-
-st.subheader("Kategori dengan Waktu Pengiriman Terlama")
-st.dataframe(category_shipping_time.tail())
-
-fig, ax = plt.subplots(figsize=(10, 5))
-category_shipping_time.tail(10).plot(kind='barh', color='orange', ax=ax)
-plt.title('Kategori dengan Waktu Pengiriman Terlama', fontsize=14)
-plt.xlabel('Rata-rata Waktu Pengiriman (hari)', fontsize=12)
-plt.ylabel('Kategori Produk', fontsize=12)
-st.pyplot(fig)
-
-# Question 3: Most Used Payment Method for Above-Average Transactions
-avg_payment = order_payments['payment_value'].mean()
-above_avg_payments = order_payments[order_payments['payment_value'] > avg_payment]
-top_payment_methods = above_avg_payments['payment_type'].value_counts()
-
-st.subheader("Metode Pembayaran Paling Sering Digunakan untuk Transaksi di Atas Rata-rata")
-st.dataframe(top_payment_methods)
-
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x=top_payment_methods.values, y=top_payment_methods.index, palette='coolwarm', ax=ax)
-plt.title('Metode Pembayaran untuk Transaksi di Atas Rata-rata', fontsize=14)
-plt.xlabel('Jumlah Penggunaan', fontsize=12)
-plt.ylabel('Metode Pembayaran', fontsize=12)
-st.pyplot(fig)
-
-# Question 4: Repeat Purchase Customer Patterns
-customer_order_counts = orders.groupby('customer_id').size().reset_index(name='order_count')
-repeat_customers = customer_order_counts[customer_order_counts['order_count'] > 1]
-repeat_percentage = (len(repeat_customers) / len(customer_order_counts)) * 100
-
-st.subheader(f"Persentase Pelanggan yang Melakukan Pembelian Ulang: {repeat_percentage:.2f}%")
-
-repeat_orders = orders[orders['customer_id'].isin(repeat_customers['customer_id'])]
-repeat_order_items = repeat_orders.merge(order_items, on='order_id')
-repeat_categories = repeat_order_items.merge(products, on='product_id')['product_category_name'].value_counts()
-
-st.subheader("Top 10 Kategori Produk untuk Pelanggan Repeat")
-st.dataframe(repeat_categories.head(10))
-
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.barplot(x=repeat_categories.head(10).values, y=repeat_categories.head(10).index, palette='magma', ax=ax)
-plt.title('Top 10 Kategori Produk untuk Pelanggan Repeat', fontsize=14)
-plt.xlabel('Jumlah Penjualan', fontsize=12)
-plt.ylabel('Kategori Produk', fontsize=12)
-st.pyplot(fig)
