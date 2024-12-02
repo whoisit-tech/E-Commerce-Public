@@ -3,8 +3,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Pertanyaan 1
-data = {
+# ==================================================================================
+# Pertanyaan 1: Produk dengan Penjualan Terbanyak
+# ==================================================================================
+sales_data = {
     "product_id": [
         "aca2eb7d00ea1a7b8ebd4e68314663af",
         "99a4788cb24856965c36a24e339b6058",
@@ -30,23 +32,16 @@ data = {
         "informatica_acessorios",
     ],
     "sales_count": [527, 488, 484, 392, 388, 373, 343, 323, 281, 274],
-    "revenue_contribution": [
-        0.276706, 0.316559, 0.195541, 0.157748, 0.154925, 0.149998, 0.347379,
-        0.277254, 0.046537, 0.302264,
-    ],
 }
 
-# Create DataFrame
-df = pd.DataFrame(data)
+df_sales = pd.DataFrame(sales_data)
 
-# Streamlit UI
 st.title("Top Products by Sales Count")
 st.write("This chart displays the top products based on their sales count.")
 
-# Plot
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.barplot(
-    data=df,
+    data=df_sales,
     x="sales_count",
     y="product_category_name",
     palette="viridis",
@@ -55,18 +50,13 @@ sns.barplot(
 ax.set_title("Top 10 Products by Sales Count")
 ax.set_xlabel("Sales Count")
 ax.set_ylabel("Product Category")
-
-# Display plot in Streamlit
 st.pyplot(fig)
+st.dataframe(df_sales)
 
-# Additional table
-st.write("Data Table:")
-st.dataframe(df)
-
-# Pertanyaan 2
-
-average_shipping_time = 12.09
-data = {
+# ==================================================================================
+# Pertanyaan 2: Rata-rata Waktu Pengiriman
+# ==================================================================================
+shipping_data = {
     "product_category_name": [
         "casa_conforto_2",
         "fashion_calcados",
@@ -74,25 +64,19 @@ data = {
         "artigos_de_natal",
         "moveis_escritorio",
     ],
-    "shipping_time": [14.066667, 14.933852, 15.000000, 15.300000, 20.386691],
+    "shipping_time": [14.07, 14.93, 15.00, 15.30, 20.39],
 }
 
-# Create DataFrame
-df = pd.DataFrame(data)
+df_shipping = pd.DataFrame(shipping_data)
+average_shipping_time = 12.09
 
-# Streamlit UI
 st.title("Shipping Time Analysis")
-st.write("This application displays the average shipping time and categories with the longest shipping times.")
+st.metric("Average Shipping Time", f"{average_shipping_time} days")
 
-# Display Average Shipping Time
-st.subheader("Average Shipping Time for All Orders")
-st.metric(label="Average Shipping Time", value=f"{average_shipping_time:.2f} days")
-
-# Display Categories with Longest Shipping Times
 st.subheader("Categories with Longest Shipping Times")
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.barplot(
-    data=df,
+    data=df_shipping,
     x="shipping_time",
     y="product_category_name",
     palette="magma",
@@ -101,62 +85,43 @@ sns.barplot(
 ax.set_title("Longest Shipping Times by Category")
 ax.set_xlabel("Shipping Time (days)")
 ax.set_ylabel("Product Category")
-
-# Display plot in Streamlit
 st.pyplot(fig)
+st.dataframe(df_shipping)
 
-# Additional table
-st.write("Data Table:")
-st.dataframe(df)
-
-# Pertanyaan 3
-
-data = {
+# ==================================================================================
+# Pertanyaan 3: Metode Pembayaran Paling Sering Digunakan
+# ==================================================================================
+payment_data = {
     "payment_type": ["credit_card", "boleto", "voucher", "debit_card"],
     "count": [24875, 5292, 461, 384],
 }
 
-# Create DataFrame
-df = pd.DataFrame(data)
+df_payment = pd.DataFrame(payment_data)
 
-# Streamlit UI
-st.title("Most Used Payment Methods for Above-Average Transactions")
-st.write("This application displays the payment methods most frequently used for transactions above the average value.")
-
-# Plot
-st.subheader("Payment Methods Usage")
+st.title("Most Used Payment Methods")
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.barplot(
-    x=df["count"],
-    y=df["payment_type"],
+    x="count",
+    y="payment_type",
+    data=df_payment,
     palette="coolwarm",
     ax=ax
 )
-ax.set_title("Most Frequent Payment Methods")
+ax.set_title("Most Used Payment Methods for Above-Average Transactions")
 ax.set_xlabel("Count")
 ax.set_ylabel("Payment Method")
-
-# Display plot in Streamlit
 st.pyplot(fig)
+st.dataframe(df_payment)
 
-# Additional table
-st.write("Data Table:")
-st.dataframe(df)
-
-# Pertanyaan 4
-
+# ==================================================================================
+# Pertanyaan 4: Persentase Repeat Purchase
+# ==================================================================================
 repeat_purchase_percentage = 0.00
 repeat_purchase_pattern = pd.Series([], name="count")
 
-# Streamlit UI
 st.title("Repeat Purchase Analysis")
-st.write("This application displays the percentage of customers who made repeat purchases and the product categories frequently purchased by repeat customers.")
+st.metric("Repeat Purchase Percentage", f"{repeat_purchase_percentage:.2f}%")
 
-# Display Repeat Purchase Percentage
-st.subheader("Percentage of Customers Who Made Repeat Purchases")
-st.metric(label="Repeat Purchase Percentage", value=f"{repeat_purchase_percentage:.2f}%")
-
-# Display Repeat Purchase Patterns
 st.subheader("Product Categories Frequently Purchased by Repeat Customers")
 if repeat_purchase_pattern.empty:
     st.write("No data available for repeat purchase patterns.")
@@ -170,6 +135,4 @@ else:
     ax.set_ylabel("Product Category")
     st.pyplot(fig)
 
-# Additional note
-st.write("Note: The data shows no repeat purchases or patterns at this time.")
-
+st.write("Note: No repeat purchase patterns available in the dataset.")
