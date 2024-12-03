@@ -62,3 +62,59 @@ ax.set_title("Kategori dengan Waktu Pengiriman Terlama")
 ax.set_xlabel("Rata-rata Waktu Pengiriman (hari)")
 ax.set_ylabel("Kategori Produk")
 st.pyplot(fig)
+
+# Data untuk grafik metode pembayaran
+data_pembayaran = {
+    "metode_pembayaran": ["credit_card", "boleto", "voucher", "debit_card"],
+    "jumlah_penggunaan": [25000, 10000, 5000, 2000]
+}
+
+df_pembayaran = pd.DataFrame(data_pembayaran)
+
+# Streamlit UI untuk Metode Pembayaran
+st.title("Metode Pembayaran untuk Transaksi di Atas Rata-rata")
+st.write("Grafik ini menunjukkan metode pembayaran yang paling sering digunakan untuk transaksi di atas rata-rata.")
+
+# Plot untuk Metode Pembayaran
+fig1, ax1 = plt.subplots(figsize=(8, 5))
+sns.barplot(
+    data=df_pembayaran,
+    x="jumlah_penggunaan",
+    y="metode_pembayaran",
+    palette="Blues",
+    ax=ax1
+)
+ax1.set_title("Metode Pembayaran untuk Transaksi di Atas Rata-rata")
+ax1.set_xlabel("Jumlah Penggunaan")
+ax1.set_ylabel("Metode Pembayaran")
+st.pyplot(fig1)
+
+# Data untuk grafik kategori produk untuk pelanggan repeat
+data_repeat = {
+    "kategori_produk": [
+        "kategori1", "kategori2", "kategori3", "kategori4", 
+        "kategori5", "kategori6", "kategori7", "kategori8", 
+        "kategori9", "kategori10"
+    ],
+    "jumlah_penjualan": [800, 750, 700, 680, 650, 620, 600, 580, 560, 540]
+}
+
+df_repeat = pd.DataFrame(data_repeat)
+
+# Streamlit UI untuk Kategori Produk untuk Pelanggan Repeat
+st.title("Top 10 Kategori Produk untuk Pelanggan Repeat")
+st.write("Grafik ini menunjukkan kategori produk dengan penjualan tertinggi untuk pelanggan repeat.")
+
+# Plot untuk Kategori Produk untuk Pelanggan Repeat
+fig2, ax2 = plt.subplots(figsize=(10, 5))
+sns.barplot(
+    data=df_repeat,
+    x="jumlah_penjualan",
+    y="kategori_produk",
+    palette="Oranges",
+    ax=ax2
+)
+ax2.set_title("Top 10 Kategori Produk untuk Pelanggan Repeat")
+ax2.set_xlabel("Jumlah Penjualan")
+ax2.set_ylabel("Kategori Produk")
+st.pyplot(fig2)
